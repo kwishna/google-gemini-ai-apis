@@ -3,7 +3,7 @@ import google.generativeai as genai
 import pandas as pd
 from chromadb import Documents, EmbeddingFunction, Embeddings
 
-dotenv.load_dotenv(pathlib.Path('./', '.env'))
+dotenv.load_dotenv(pathlib.Path('../', '.env'))
 
 GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
 

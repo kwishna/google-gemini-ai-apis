@@ -3,7 +3,7 @@ import pathlib
 import dotenv
 import google.generativeai as genai
 
-dotenv.load_dotenv(pathlib.Path('./', '.env'))
+dotenv.load_dotenv(pathlib.Path('../', '.env'))
 
 GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
 
