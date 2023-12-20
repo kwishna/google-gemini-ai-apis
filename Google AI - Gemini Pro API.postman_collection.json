@@ -1,0 +1,1141 @@
+{
+	"info": {
+		"_postman_id": "483987bb-e836-45ca-a977-e6c4d268d055",
+		"name": "Google AI - Gemini Pro API",
+		"description": "# 🚀 Get started here\n\nThis template guides you through CRUD operations (GET, POST, PUT, DELETE), variables, and tests for Google AI - Gemini Pro.\n\n## 🔖 **How to use**\n\n#### **Step 1: Send requests**\n\nRESTful APIs allow you to perform CRUD operations using the POST, GET, PUT, and DELETE HTTP methods.\n\nThis collection contains each of these [request](https://learning.postman.com/docs/sending-requests/requests/) types. Open each request and click \"Send\" to see what happens.\n\n#### **Step 2: View responses**\n\nObserve the response tab for status code (200 OK), response time, and size.\n\n#### **Step 3: Send new Body data**\n\nUpdate or add new data in \"Body\" in the POST request. Typically, Body data is also used in PUT request.\n\n``` json\n{\n    \"contents\": [\n        {\n            \"parts\": [\n                {\n                    \"text\": \"Write a story about a magic backpack.\"\n                }\n            ]\n        }\n    ]\n}\n\n ```\n\n#### **Step 4: Update the variable**\n\nVariables enable you to store and reuse values in Postman. We have created a [variable](https://learning.postman.com/docs/sending-requests/variables/) called `base_url` with the sample request [https://generativelanguage.googleapis.com/v1beta/](https://generativelanguage.googleapis.com/v1beta/). Replace it with your API endpoint to customize this collection.\n\nAlso, update `API_KEY` value for authorization.\n\nNote; Generate your`API_KEY` at [https://makersuite.google.com/app/apikey](https://makersuite.google.com/app/apikey)\n\n#### **Step 5: Add tests in the \"Tests\" tab**\n\nTests help you confirm that your API is working as expected. You can write test scripts in JavaScript and view the output in the \"Test Results\" tab.\n\n<img src=\"https://content.pstmn.io/b5f280a7-4b09-48ec-857f-0a7ed99d7ef8/U2NyZWVuc2hvdCAyMDIzLTAzLTI3IGF0IDkuNDcuMjggUE0ucG5n\">\n\n## 💪 Pro tips\n\n- Use folders to group related requests and organize the collection.\n- Add more [scripts](https://learning.postman.com/docs/writing-scripts/intro-to-scripts/) in \"Tests\" to verify if the API works as expected and execute workflows.\n    \n\n## 💡Related templates\n\n[API testing basics](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9a37a28-055b-49cd-8c7e-97494a21eb54&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[API documentation](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9c28f47-1253-44af-a2f3-20dce4da1f18&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[Authorization methods](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=31a9a6ed-4cdf-4ced-984c-d12c9aec1c27&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26694913"
+	},
+	"item": [
+		{
+			"name": "Models",
+			"item": [
+				{
+					"name": "List Models",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Schema is valid\", function () {",
+									"  var schema = {",
+									"    type: \"object\",",
+									"    properties: {",
+									"      models: {",
+									"        type: \"array\",",
+									"        items: {",
+									"          type: \"object\",",
+									"          properties: {",
+									"            name: { type: \"string\" },",
+									"            version: { type: \"string\" },",
+									"            displayName: { type: \"string\" },",
+									"            description: { type: \"string\" },",
+									"            inputTokenLimit: { type: \"number\" },",
+									"            outputTokenLimit: { type: \"number\" },",
+									"            supportedGenerationMethods: { type: \"array\" },",
+									"            temperature: { type: \"number\" },",
+									"            topP: { type: \"number\" },",
+									"            topK: { type: \"number\" }",
+									"          },",
+									"          required: [\"name\", \"version\", \"displayName\", \"description\", \"inputTokenLimit\", \"outputTokenLimit\", \"supportedGenerationMethods\", \"temperature\", \"topP\", \"topK\"]",
+									"        }",
+									"      }",
+									"    },",
+									"    required: [\"models\"]",
+									"  };",
+									"",
+									"  var response = pm.response.json();",
+									"  pm.expect(tv4.validate(response, schema)).to.be.true;",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response Content-Type is application/json\", function () {",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Supported generation methods array is not empty for each model\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData.models).to.be.an('array');",
+									"    responseData.models.forEach(function(model) {",
+									"        pm.expect(model.supportedGenerationMethods).to.be.an('array').and.to.have.lengthOf.at.least(1);",
+									"    });",
+									"});",
+									"",
+									"",
+									"pm.test(\"InputTokenLimit and OutputTokenLimit are non-negative integers\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData.models).to.be.an('array');",
+									"    responseData.models.forEach(function(model) {",
+									"        pm.expect(model.inputTokenLimit).to.be.a('number').and.to.be.at.least(0);",
+									"        pm.expect(model.outputTokenLimit).to.be.a('number').and.to.be.at.least(0);",
+									"    });",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/models?key={{API_KEY}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"models"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{API_KEY}}"
+								}
+							]
+						},
+						"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Gemini Pro Model Info",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response Model Name\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.name).to.eql('models/gemini-pro');",
+									"});",
+									"",
+									"pm.test(\"Response time is less than 500ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});",
+									"",
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									"",
+									"pm.test(\"Schema is valid\", function () {",
+									"  var schema = {",
+									"    type: \"object\",",
+									"    properties: {",
+									"      name: { type: \"string\" },",
+									"      version: { type: \"string\" },",
+									"      displayName: { type: \"string\" },",
+									"      description: { type: \"string\" },",
+									"      inputTokenLimit: { type: \"number\" },",
+									"      outputTokenLimit: { type: \"number\" },",
+									"      supportedGenerationMethods: { type: \"array\" },",
+									"      temperature: { type: \"number\" },",
+									"      topP: { type: \"number\" },",
+									"      topK: { type: \"number\" }",
+									"    },",
+									"    required: [\"name\", \"version\", \"displayName\", \"description\", \"inputTokenLimit\", \"outputTokenLimit\", \"supportedGenerationMethods\", \"temperature\", \"topP\", \"topK\"],",
+									"  };",
+									"",
+									"  var response = pm.response.json();",
+									"  pm.expect(tv4.validate(response, schema)).to.be.true;",
+									"});",
+									"",
+									"",
+									"pm.test(\"Name field is a non-empty string\", function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData.name).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Name should not be empty\");",
+									"});",
+									"",
+									"pm.test(\"Version field is a non-empty string\", function () {",
+									"    const responseData = pm.response.json();",
+									"    pm.expect(responseData.version).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Version should not be empty\");",
+									"});",
+									"",
+									"pm.test(\"Content-Type header is application/json\", function () {",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"SupportedGenerationMethods array is present and contains at least one element\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.supportedGenerationMethods).to.be.an('array').that.is.not.empty;",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/models/gemini-pro?key={{API_KEY}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"models",
+								"gemini-pro"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{API_KEY}}"
+								}
+							]
+						},
+						"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Gemini Pro Vision Model Info",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Schema is valid\", function () {",
+									"  var schema = {",
+									"    type: \"object\",",
+									"    properties: {",
+									"      name: { type: \"string\" },",
+									"      version: { type: \"string\" },",
+									"      displayName: { type: \"string\" },",
+									"      description: { type: \"string\" },",
+									"      inputTokenLimit: { type: \"number\" },",
+									"      outputTokenLimit: { type: \"number\" },",
+									"      supportedGenerationMethods: { type: \"array\" },",
+									"      temperature: { type: \"number\" },",
+									"      topP: { type: \"number\" },",
+									"      topK: { type: \"number\" }",
+									"    },",
+									"    required: [\"name\", \"version\", \"displayName\", \"description\", \"inputTokenLimit\", \"outputTokenLimit\", \"supportedGenerationMethods\", \"temperature\", \"topP\", \"topK\"],",
+									"  };",
+									"",
+									"  var response = pm.response.json();",
+									"  pm.expect(tv4.validate(response, schema)).to.be.true;",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response Content-Type is application/json\", function () {",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"SupportedGenerationMethods is an array and contains at least one element\", function () {",
+									"    const responseData = pm.response.json();",
+									"",
+									"    pm.expect(responseData.supportedGenerationMethods).to.be.an('array').and.to.have.lengthOf.at.least(1);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Temperature, topP, and topK are non-negative numbers\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.temperature).to.be.a('number').and.to.be.at.least(0);",
+									"    pm.expect(responseData.topP).to.be.a('number').and.to.be.at.least(0);",
+									"    pm.expect(responseData.topK).to.be.a('number').and.to.be.at.least(0);",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/models/gemini-pro-vision?key={{API_KEY}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"models",
+								"gemini-pro-vision"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{API_KEY}}"
+								}
+							]
+						},
+						"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Embeddings",
+			"item": [
+				{
+					"name": "Generate Embeddings",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has embedding object with values array\", function () {\r",
+									"    pm.expect(pm.response.json()).to.have.property('embedding').that.is.an('object').with.property('values').that.is.an('array');\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Content type is application/json\", function () {\r",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Values array must contain at least one element\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData.embedding.values).to.be.an('array').that.is.not.empty;\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Verify the structure of the 'embedding' object\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData.embedding).to.exist.and.to.be.an('object');\r",
+									"    pm.expect(responseData.embedding.values).to.exist.and.to.be.an('array');\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response time is within an acceptable range\", function () {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(300);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"model\": \"models/embedding-001\",\r\n    \"content\": {\r\n        \"parts\": [\r\n            {\r\n                \"text\": \"Write the definition of embedding.\"\r\n            }\r\n        ]\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/models/embedding-001:embedContent?key={{API_KEY}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"models",
+								"embedding-001:embedContent"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{API_KEY}}"
+								}
+							]
+						},
+						"description": "Embedding is a technique used to represent information as a list of floating point numbers in an array. With Gemini, you can represent text (words, sentences, and blocks of text) in a vectorized form, making it easier to compare and contrast embeddings. For example, two texts that share a similar subject matter or sentiment should have similar embeddings, which can be identified through mathematical comparison techniques such as cosine similarity."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Count Prompt Tokens",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Schema is valid\", function () {\r",
+							"  var schema = {\r",
+							"    type: \"object\",\r",
+							"    properties: {\r",
+							"      totalTokens: {\r",
+							"        type: \"number\"\r",
+							"      }\r",
+							"    },\r",
+							"    required: [\"totalTokens\"]\r",
+							"  };\r",
+							"\r",
+							"  var response = pm.response.json();\r",
+							"  pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response Content-Type is application/json\", function () {\r",
+							"  pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Total tokens is a non-negative integer\", function () {\r",
+							"  const responseData = pm.response.json();\r",
+							"  \r",
+							"  pm.expect(responseData).to.be.an('object');\r",
+							"  pm.expect(responseData.totalTokens).to.exist.and.to.be.a('number');\r",
+							"  pm.expect(responseData.totalTokens).to.be.at.least(0);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"TotalTokens field is present in the response\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    pm.expect(responseData.totalTokens).to.exist;\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"contents\": [\r\n        {\r\n            \"parts\": [\r\n                {\r\n                    \"text\": \"Embedding is a technique used to represent information as a list of floating point numbers in an array.\"\r\n                }\r\n            ]\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/models/gemini-pro:countTokens?key={{API_KEY}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"models",
+						"gemini-pro:countTokens"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{API_KEY}}"
+						}
+					]
+				},
+				"description": "Embedding is a technique used to represent information as a list of floating point numbers in an array. With Gemini, you can represent text (words, sentences, and blocks of text) in a vectorized form, making it easier to compare and contrast embeddings. For example, two texts that share a similar subject matter or sentiment should have similar embeddings, which can be identified through mathematical comparison techniques such as cosine similarity."
+			},
+			"response": []
+		},
+		{
+			"name": "Stream Cointent",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Schema is valid\", function () {\r",
+							"  var schema = {\r",
+							"    type: \"array\",\r",
+							"    items: {\r",
+							"      type: \"object\",\r",
+							"      properties: {\r",
+							"        candidates: {\r",
+							"          type: \"array\",\r",
+							"          items: {\r",
+							"            type: \"object\",\r",
+							"            properties: {\r",
+							"              content: {\r",
+							"                type: \"object\",\r",
+							"                properties: {\r",
+							"                  parts: {\r",
+							"                    type: \"array\",\r",
+							"                    items: {\r",
+							"                      type: \"object\",\r",
+							"                      properties: {\r",
+							"                        text: { type: \"string\" }\r",
+							"                      },\r",
+							"                      required: [\"text\"]\r",
+							"                    }\r",
+							"                  },\r",
+							"                  role: { type: \"string\" }\r",
+							"                },\r",
+							"                required: [\"parts\", \"role\"]\r",
+							"              },\r",
+							"              finishReason: { type: \"string\" },\r",
+							"              index: { type: \"number\" },\r",
+							"              safetyRatings: {\r",
+							"                type: \"array\",\r",
+							"                items: {\r",
+							"                  type: \"object\",\r",
+							"                  properties: {\r",
+							"                    category: { type: \"string\" },\r",
+							"                    probability: { type: \"string\" }\r",
+							"                  },\r",
+							"                  required: [\"category\", \"probability\"]\r",
+							"                }\r",
+							"              }\r",
+							"            },\r",
+							"            required: [\"content\", \"finishReason\", \"index\", \"safetyRatings\"]\r",
+							"          }\r",
+							"        },\r",
+							"        promptFeedback: {\r",
+							"          type: \"object\",\r",
+							"          properties: {\r",
+							"            safetyRatings: {\r",
+							"              type: \"array\",\r",
+							"              items: {\r",
+							"                type: \"object\",\r",
+							"                properties: {\r",
+							"                  category: { type: \"string\" },\r",
+							"                  probability: { type: \"string\" }\r",
+							"                },\r",
+							"                required: [\"category\", \"probability\"]\r",
+							"              }\r",
+							"            }\r",
+							"          },\r",
+							"          required: [\"safetyRatings\"]\r",
+							"        }\r",
+							"      },\r",
+							"      required: [\"candidates\", \"promptFeedback\"]\r",
+							"    }\r",
+							"  };\r",
+							"\r",
+							"  var response = pm.response.json();\r",
+							"  pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header is 'application/json'\", function () {\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Ensure that the 'text' within 'parts' is a non-empty string\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(responseData).to.be.an('array');\r",
+							"    responseData.forEach(function(candidate) {\r",
+							"        pm.expect(candidate.content.parts).to.be.an('array');\r",
+							"        candidate.content.parts.forEach(function(part) {\r",
+							"            pm.expect(part.text).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Value should not be empty\");\r",
+							"        });\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Verify that 'category' within 'safetyRatings' is a non-empty string\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(responseData).to.be.an('array');\r",
+							"    responseData.forEach(function(candidate) {\r",
+							"        candidate.safetyRatings.forEach(function(safetyRating) {\r",
+							"            pm.expect(safetyRating.category).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Category should not be empty\");\r",
+							"        });\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        {\r\n          \"text\": \"Write long a story about a magic backpack.\"\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/models/gemini-pro:streamGenerateContent?key={{API_KEY}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"models",
+						"gemini-pro:streamGenerateContent"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{API_KEY}}"
+						}
+					]
+				},
+				"description": "Embedding is a technique used to represent information as a list of floating point numbers in an array. With Gemini, you can represent text (words, sentences, and blocks of text) in a vectorized form, making it easier to compare and contrast embeddings. For example, two texts that share a similar subject matter or sentiment should have similar embeddings, which can be identified through mathematical comparison techniques such as cosine similarity."
+			},
+			"response": []
+		},
+		{
+			"name": "Set Configurations",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Schema is valid\", function () {\r",
+							"  var schema = {\r",
+							"    type: \"object\",\r",
+							"    properties: {\r",
+							"      candidates: {\r",
+							"        type: \"array\",\r",
+							"        items: {\r",
+							"          type: \"object\",\r",
+							"          properties: {\r",
+							"            content: {\r",
+							"              type: \"object\",\r",
+							"              properties: {\r",
+							"                parts: {\r",
+							"                  type: \"array\",\r",
+							"                  items: {\r",
+							"                    type: \"object\",\r",
+							"                    properties: {\r",
+							"                      text: { type: \"string\" }\r",
+							"                    }\r",
+							"                  }\r",
+							"                },\r",
+							"                role: { type: \"string\" }\r",
+							"              }\r",
+							"            },\r",
+							"            finishReason: { type: \"string\" },\r",
+							"            index: { type: \"number\" },\r",
+							"            safetyRatings: {\r",
+							"              type: \"array\",\r",
+							"              items: {\r",
+							"                type: \"object\",\r",
+							"                properties: {\r",
+							"                  category: { type: \"string\" },\r",
+							"                  probability: { type: \"string\" }\r",
+							"                }\r",
+							"              }\r",
+							"            }\r",
+							"          }\r",
+							"        }\r",
+							"      },\r",
+							"      promptFeedback: {\r",
+							"        type: \"object\",\r",
+							"        properties: {\r",
+							"          safetyRatings: {\r",
+							"            type: \"array\",\r",
+							"            items: {\r",
+							"              type: \"object\",\r",
+							"              properties: {\r",
+							"                category: { type: \"string\" },\r",
+							"                probability: { type: \"string\" }\r",
+							"              }\r",
+							"            }\r",
+							"          }\r",
+							"        }\r",
+							"      }\r",
+							"    },\r",
+							"    required: [\"candidates\", \"promptFeedback\"]\r",
+							"  };\r",
+							"\r",
+							"  var response = pm.response.json();\r",
+							"  pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+							"});\r",
+							"pm.test(\"Response Content-Type is application/json\", function () {\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Validate the promptFeedback object\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.promptFeedback).to.exist.and.to.be.an('object');\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Verify that the text inside the parts array is a non-empty string\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData.candidates).to.be.an('array');\r",
+							"    responseData.candidates.forEach(function(candidate) {\r",
+							"        pm.expect(candidate.content.parts).to.be.an('array');\r",
+							"        candidate.content.parts.forEach(function(part) {\r",
+							"            pm.expect(part.text).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Text inside parts array should not be empty\");\r",
+							"        });\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        {\r\n          \"text\": \"Hello, Please generate a nice sweet poem for a little kid.\"\r\n        }\r\n      ]\r\n    }\r\n  ],\r\n  \"safetySettings\": [\r\n    {\r\n      \"category\": \"HARM_CATEGORY_DANGEROUS_CONTENT\",\r\n      \"threshold\": \"BLOCK_ONLY_HIGH\"\r\n    }\r\n  ],\r\n  \"generationConfig\": {\r\n    \"stopSequences\": [\r\n      \"Title\"\r\n    ],\r\n    \"temperature\": 1,\r\n    \"maxOutputTokens\": 800,\r\n    \"topP\": 0.8,\r\n    \"topK\": 10\r\n  }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/models/gemini-pro:generateContent?key={{API_KEY}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"models",
+						"gemini-pro:generateContent"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{API_KEY}}"
+						}
+					]
+				},
+				"description": "Embedding is a technique used to represent information as a list of floating point numbers in an array. With Gemini, you can represent text (words, sentences, and blocks of text) in a vectorized form, making it easier to compare and contrast embeddings. For example, two texts that share a similar subject matter or sentiment should have similar embeddings, which can be identified through mathematical comparison techniques such as cosine similarity."
+			},
+			"response": []
+		},
+		{
+			"name": "Text Only Input",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Schema is valid\", function () {\r",
+							"  var schema = {\r",
+							"    type: \"object\",\r",
+							"    properties: {\r",
+							"      candidates: {\r",
+							"        type: \"array\",\r",
+							"        items: {\r",
+							"          type: \"object\",\r",
+							"          properties: {\r",
+							"            content: {\r",
+							"              type: \"object\",\r",
+							"              properties: {\r",
+							"                parts: {\r",
+							"                  type: \"array\"\r",
+							"                },\r",
+							"                role: {\r",
+							"                  type: \"string\"\r",
+							"                }\r",
+							"              },\r",
+							"              required: [\"parts\", \"role\"]\r",
+							"            },\r",
+							"            finishReason: {\r",
+							"              type: \"string\"\r",
+							"            },\r",
+							"            index: {\r",
+							"              type: \"number\"\r",
+							"            },\r",
+							"            safetyRatings: {\r",
+							"              type: \"array\",\r",
+							"              items: {\r",
+							"                type: \"object\",\r",
+							"                properties: {\r",
+							"                  category: {\r",
+							"                    type: \"string\"\r",
+							"                  },\r",
+							"                  probability: {\r",
+							"                    type: \"string\"\r",
+							"                  }\r",
+							"                },\r",
+							"                required: [\"category\", \"probability\"]\r",
+							"              }\r",
+							"            }\r",
+							"          },\r",
+							"          required: [\"content\", \"finishReason\", \"index\", \"safetyRatings\"]\r",
+							"        }\r",
+							"      },\r",
+							"      promptFeedback: {\r",
+							"        type: \"object\",\r",
+							"        properties: {\r",
+							"          safetyRatings: {\r",
+							"            type: \"array\",\r",
+							"            items: {\r",
+							"              type: \"object\",\r",
+							"              properties: {\r",
+							"                category: {\r",
+							"                  type: \"string\"\r",
+							"                },\r",
+							"                probability: {\r",
+							"                  type: \"string\"\r",
+							"                }\r",
+							"              },\r",
+							"              required: [\"category\", \"probability\"]\r",
+							"            }\r",
+							"          }\r",
+							"        },\r",
+							"        required: [\"safetyRatings\"]\r",
+							"      }\r",
+							"    },\r",
+							"    required: [\"candidates\", \"promptFeedback\"]\r",
+							"  };\r",
+							"\r",
+							"  var response = pm.response.json();\r",
+							"  pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+							"});\r",
+							"pm.test(\"Response Content-Type is application/json\", function () {\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"PromptFeedback object structure is valid\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.promptFeedback).to.exist.and.to.be.an('object');\r",
+							"    pm.expect(responseData.promptFeedback.safetyRatings).to.exist.and.to.be.an('array');\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Parts array within content of each candidate is not empty\", function () {\r",
+							"  const responseData = pm.response.json();\r",
+							"  \r",
+							"  pm.expect(responseData.candidates).to.be.an('array');\r",
+							"  responseData.candidates.forEach(function(candidate) {\r",
+							"    pm.expect(candidate.content.parts).to.be.an('array').that.is.not.empty;\r",
+							"  });\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        {\r\n          \"text\": \"Hello, Please generate a nice sweet poem for a little kid.\"\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/models/gemini-pro:generateContent?key={{API_KEY}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"models",
+						"gemini-pro:generateContent"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{API_KEY}}"
+						}
+					]
+				},
+				"description": "Embedding is a technique used to represent information as a list of floating point numbers in an array. With Gemini, you can represent text (words, sentences, and blocks of text) in a vectorized form, making it easier to compare and contrast embeddings. For example, two texts that share a similar subject matter or sentiment should have similar embeddings, which can be identified through mathematical comparison techniques such as cosine similarity."
+			},
+			"response": []
+		},
+		{
+			"name": "Text-Image Input",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Schema is valid\", function () {\r",
+							"  var schema = {\r",
+							"    type: \"object\",\r",
+							"    properties: {\r",
+							"      candidates: {\r",
+							"        type: \"array\",\r",
+							"        items: {\r",
+							"          type: \"object\",\r",
+							"          properties: {\r",
+							"            content: {\r",
+							"              type: \"object\",\r",
+							"              properties: {\r",
+							"                parts: {\r",
+							"                  type: \"array\",\r",
+							"                  items: {\r",
+							"                    type: \"object\",\r",
+							"                    properties: {\r",
+							"                      text: { type: \"string\" }\r",
+							"                    }\r",
+							"                  }\r",
+							"                },\r",
+							"                role: { type: \"string\" }\r",
+							"              }\r",
+							"            },\r",
+							"            finishReason: { type: \"string\" },\r",
+							"            index: { type: \"number\" },\r",
+							"            safetyRatings: {\r",
+							"              type: \"array\",\r",
+							"              items: {\r",
+							"                type: \"object\",\r",
+							"                properties: {\r",
+							"                  category: { type: \"string\" },\r",
+							"                  probability: { type: \"string\" }\r",
+							"                }\r",
+							"              }\r",
+							"            }\r",
+							"          }\r",
+							"        }\r",
+							"      },\r",
+							"      promptFeedback: {\r",
+							"        type: \"object\",\r",
+							"        properties: {\r",
+							"          safetyRatings: {\r",
+							"            type: \"array\",\r",
+							"            items: {\r",
+							"              type: \"object\",\r",
+							"              properties: {\r",
+							"                category: { type: \"string\" },\r",
+							"                probability: { type: \"string\" }\r",
+							"              }\r",
+							"            }\r",
+							"          }\r",
+							"        }\r",
+							"      }\r",
+							"    },\r",
+							"    required: [\"candidates\", \"promptFeedback\"]\r",
+							"  };\r",
+							"\r",
+							"  var response = pm.response.json();\r",
+							"  pm.expect(tv4.validate(response, schema)).to.be.true;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content has non-empty parts and role\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData.candidates).to.be.an('array');\r",
+							"    responseData.candidates.forEach(candidate => {\r",
+							"        pm.expect(candidate.content).to.exist.and.to.be.an('object');\r",
+							"        pm.expect(candidate.content.parts).to.be.an('array').that.is.not.empty;\r",
+							"        pm.expect(candidate.content.role).to.be.a('string').that.is.not.empty;\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Finish reason is a non-empty string\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData.candidates[0].finishReason).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Finish reason should not be empty\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Index is a non-negative number\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    \r",
+							"    responseData.candidates.forEach(candidate => {\r",
+							"        pm.expect(candidate.index).to.be.a('number').and.to.be.at.least(0);\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Prompt feedback safety ratings have non-empty category and probability\", function () {\r",
+							"  const responseData = pm.response.json();\r",
+							"\r",
+							"  pm.expect(responseData.promptFeedback).to.exist;\r",
+							"  pm.expect(responseData.promptFeedback.safetyRatings).to.be.an('array');\r",
+							"\r",
+							"  responseData.promptFeedback.safetyRatings.forEach(function (rating) {\r",
+							"    pm.expect(rating.category).to.exist.and.to.not.be.empty;\r",
+							"    pm.expect(rating.probability).to.exist.and.to.not.be.empty;\r",
+							"  });\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"contents\": [\r\n        {\r\n            \"parts\": [\r\n                {\r\n                    \"text\": \"What is this picture?\"\r\n                },\r\n                {\r\n                    \"inline_data\": {\r\n                        \"mime_type\": \"image/jpeg\",\r\n                        \"data\": \"iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAAA1BMVEUAAACnej3aAAAAAXRSTlMAQObYZgAAAApJREFUCNdjYAAAAAIAAeIhvDMAAAAASUVORK5CYII=\"\r\n                    }\r\n                }\r\n            ]\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/models/gemini-pro-vision:generateContent?key={{API_KEY}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"models",
+						"gemini-pro-vision:generateContent"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{API_KEY}}"
+						}
+					]
+				},
+				"description": "Embedding is a technique used to represent information as a list of floating point numbers in an array. With Gemini, you can represent text (words, sentences, and blocks of text) in a vectorized form, making it easier to compare and contrast embeddings. For example, two texts that share a similar subject matter or sentiment should have similar embeddings, which can be identified through mathematical comparison techniques such as cosine similarity."
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "https://generativelanguage.googleapis.com/v1beta"
+		},
+		{
+			"key": "API_KEY",
+			"value": "<ENTER_YOUR_API_KEY>",
+			"type": "string"
+		}
+	]
+}
